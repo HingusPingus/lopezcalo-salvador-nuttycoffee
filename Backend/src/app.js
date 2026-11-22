@@ -3,8 +3,11 @@ import routes from "./routes/index.js";
 import notFoundHandler from "./middlewares/notFoundHandler.js";
 import errorHandler from "./middlewares/errorHandler.js";
 
+import cors from "./middlewares/cors.js";
+
 const app = express();
 
+app.use(cors);
 app.use(express.json());
 
 app.use("/api", routes);
