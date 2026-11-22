@@ -1,5 +1,6 @@
 import productoRepository from "../repositories/ProductoRepository.js";
 import categoriaRepository from "../repositories/CategoriaRepository.js";
+import pedidoRepository from "../repositories/PedidoRepository.js";
 import { NotFoundError, ConflictError } from "../exceptions/AppError.js";
 import { Messages } from "../enums/Messages.js";
 
@@ -35,8 +36,22 @@ class ProductoService {
     }
 
     delete(id) {
-        this.getById(id);
+        const producto = this.getById(id);
+
+        // Baja lógica si el producto forma parte de pedidos, para no perder el historial.
+        if (pedidoRepository.existsByProductoId(id)) {
+            producto.activo = false;
+            producto.disponible = false;
+            return producto;
+        }
+
         return productoRepository.delete(id);
+    }
+
+    cambiarDisponibilidad(id, disponible) {
+        const producto = this.getById(id);
+        producto.disponible = disponible;
+        return producto;
     }
 
     #getCategoria(categoriaId) {

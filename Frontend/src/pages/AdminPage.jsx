@@ -18,8 +18,10 @@ export default function AdminPage() {
     setDeleting(true);
 
     try {
-      await deleteProduct(toDelete.id);
-      toast.success(`"${toDelete.nombre}" se eliminó correctamente.`);
+      const result = await deleteProduct(toDelete.id);
+      toast.success(result?.activo === false
+        ? `"${toDelete.nombre}" se dio de baja (forma parte de pedidos anteriores).`
+        : `"${toDelete.nombre}" se eliminó correctamente.`);
       setToDelete(null);
       await reload();
     } catch (err) {
@@ -60,10 +62,17 @@ export default function AdminPage() {
                   <td>{product.nombre}</td>
                   <td>{product.categoria.nombre}</td>
                   <td>{formatPrice(product.precio)}</td>
-                  <td>{product.disponible ? "Disponible" : "Sin stock"}{product.destacado && " · ★"}</td>
+                  <td>
+                    {!product.activo
+                      ? "Dado de baja"
+                      : product.disponible ? "Disponible" : "Sin stock"}
+                    {product.destacado && " · ★"}
+                  </td>
                   <td className="table__actions">
                     <Link to={`/admin/${product.id}/editar`} className="btn btn--secondary btn--small" aria-label={`Editar ${product.nombre}`}>Editar</Link>
-                    <button type="button" className="btn btn--danger btn--small" onClick={() => setToDelete(product)} aria-label={`Eliminar ${product.nombre}`}>Eliminar</button>
+                    {product.activo && (
+                      <button type="button" className="btn btn--danger btn--small" onClick={() => setToDelete(product)} aria-label={`Eliminar ${product.nombre}`}>Eliminar</button>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -1,7 +1,7 @@
 import defaultImage from "../assets/producto-default.svg";
 import { formatPrice } from "../utils/formatPrice";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, action }) {
   return (
     <article className="card">
       <img
@@ -19,7 +19,10 @@ export default function ProductCard({ product }) {
         </div>
         <h3>{product.nombre}</h3>
         <p className="card__description">{product.descripcion}</p>
-        <p className="card__price">{formatPrice(product.precio)}</p>
+        <div className="card__footer">
+          <p className="card__price">{formatPrice(product.precio)}</p>
+          {action}
+        </div>
       </div>
     </article>
   );
