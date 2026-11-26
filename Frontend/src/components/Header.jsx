@@ -11,10 +11,13 @@ export default function Header() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    // Se sale de la página actual antes de cerrar sesión para que las rutas
+    // protegidas no redirijan al login.
+    navigate("/");
+
     try {
       await logout();
       toast.success("Sesión cerrada correctamente.");
-      navigate("/");
     } catch (err) {
       toast.error(err.message);
     }
